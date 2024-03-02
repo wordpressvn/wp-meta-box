@@ -278,7 +278,6 @@ $meta_box->add_option('repeater', [
 ## Contributors
 
 - [Jeffrey van Rossum](https://github.com/jeffreyvr)
-- [All contributors](https://github.com/jeffreyvr/wp-meta-box/graphs/contributors)
 
 ## License
 
