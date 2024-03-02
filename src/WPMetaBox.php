@@ -1,9 +1,5 @@
 <?php
-/** 
-v1.2
-[NEW] Add field
-[FIX] CSS
-**/
+/** 1.0.0 **/
 
 namespace WPVNTeam\WPMetaBox;
 
