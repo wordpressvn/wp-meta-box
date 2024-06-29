@@ -2,9 +2,14 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-use WPVNTeam\WPMetaBox\Options\OptionAbstract;
-
 class Date extends OptionAbstract
 {
-    public $view = 'date';
+    public $view = 'text';
+
+    public function __construct($args, $meta_box)
+    {
+        $this->default_args['type'] = 'date';
+
+        parent::__construct($args, $meta_box);
+    }
 }

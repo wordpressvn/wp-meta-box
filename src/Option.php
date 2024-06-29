@@ -3,26 +3,30 @@
 namespace WPVNTeam\WPMetaBox;
 
 use Exception;
-use WPVNTeam\WPMetaBox\Options\Date;
-use WPVNTeam\WPMetaBox\Options\Text;
-use WPVNTeam\WPMetaBox\Options\Color;
-use WPVNTeam\WPMetaBox\Options\Image;
-use WPVNTeam\WPMetaBox\Options\Number;
-use WPVNTeam\WPMetaBox\Options\Select;
-use WPVNTeam\WPMetaBox\Options\Choices;
 use WPVNTeam\WPMetaBox\Options\Checkbox;
+use WPVNTeam\WPMetaBox\Options\Choices;
+use WPVNTeam\WPMetaBox\Options\CodeEditor;
+use WPVNTeam\WPMetaBox\Options\Color;
+use WPVNTeam\WPMetaBox\Options\Date;
+use WPVNTeam\WPMetaBox\Options\Image;
+use WPVNTeam\WPMetaBox\Options\Media;
+use WPVNTeam\WPMetaBox\Options\Number;
 use WPVNTeam\WPMetaBox\Options\Repeater;
+use WPVNTeam\WPMetaBox\Options\Select;
+use WPVNTeam\WPMetaBox\Options\Select2;
+use WPVNTeam\WPMetaBox\Options\SelectMultiple;
+use WPVNTeam\WPMetaBox\Options\Text;
 use WPVNTeam\WPMetaBox\Options\Textarea;
 use WPVNTeam\WPMetaBox\Options\WPEditor;
-use WPVNTeam\WPMetaBox\Options\CodeEditor;
-use WPVNTeam\WPMetaBox\Options\Media;
-use WPVNTeam\WPMetaBox\Options\SelectMultiple;
 
 class Option
 {
     public $meta_box;
+
     public $type;
+
     public $args;
+
     public $implementation;
 
     public function __construct($meta_box, $type, $args = [])
@@ -38,14 +42,14 @@ class Option
             'checkbox' => Checkbox::class,
             'choices' => Choices::class,
             'textarea' => Textarea::class,
-            'select' => Select::class,
-            'select-multiple' => SelectMultiple::class,
             'wp-editor' => WPEditor::class,
             'code-editor' => CodeEditor::class,
             'repeater' => Repeater::class,
             'media' => Media::class,
             'image' => Image::class,
-            'color' => Color::class
+            'color' => Color::class,
+            'select' => Select::class,
+            'select2' => Select2::class,
         ]);
 
         if (empty($type_map[$this->type])) {

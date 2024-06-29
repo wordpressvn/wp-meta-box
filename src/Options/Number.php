@@ -2,9 +2,14 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-use WPVNTeam\WPMetaBox\Options\OptionAbstract;
-
 class Number extends OptionAbstract
 {
-    public $view = 'number';
+    public $view = 'text';
+
+    public function __construct($args, $meta_box)
+    {
+        $this->default_args['type'] = 'number';
+
+        parent::__construct($args, $meta_box);
+    }
 }
