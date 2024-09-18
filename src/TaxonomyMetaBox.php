@@ -2,11 +2,11 @@
 
 namespace WPVNTeam\WPMetaBox;
 
+use WPVNTeam\WPMetaBox\MetaBox;
+
 class TaxonomyMetaBox extends MetaBox
 {
     public $taxonomies = [];
-
-    public $contexts = ['create', 'edit'];
 
     public function set_taxonomy($taxonomy)
     {
@@ -14,15 +14,6 @@ class TaxonomyMetaBox extends MetaBox
         $taxonomies[] = $taxonomy;
 
         $this->set_taxonomies($taxonomies);
-
-        return $this;
-    }
-
-    public function set_contexts($contexts)
-    {
-        $this->contexts = (array) $contexts;
-
-        return $this;
     }
 
     public function set_taxonomies($taxonomy)
@@ -39,28 +30,23 @@ class TaxonomyMetaBox extends MetaBox
 
     public function register()
     {
-        if (! $this->should_register()) {
+        if(!$this->should_register()) {
             return;
         }
 
         foreach ($this->get_taxonomies() as $taxonomy) {
-            if(in_array('create', $this->contexts)) {
-                add_action("{$taxonomy}_add_form_fields", [$this, 'render']);
-                add_action("created_{$taxonomy}", [$this, 'save']);
-            }
-
-            if(in_array('edit', $this->contexts)) {
-                add_action("{$taxonomy}_edit_form_fields", [$this, 'render'], 10, 2);
-                add_action("edited_{$taxonomy}", [$this, 'save']);
-            }
+            add_action("{$taxonomy}_edit_form_fields", [$this, 'render'], 10, 2);
+            add_action("{$taxonomy}_add_form_fields", [$this, 'render']);
+            add_action("created_{$taxonomy}", [$this, 'save']);
+            add_action("edited_{$taxonomy}", [$this, 'save']);
         }
     }
 
     public function save($term_id = null)
     {
-        if (! $term_id) {
-            return;
-        }
+		if ( !$term_id ) {
+			return;
+		}
 
         if (! current_user_can($this->capability)) {
             return $term_id;
@@ -92,9 +78,10 @@ class TaxonomyMetaBox extends MetaBox
 
     public function make()
     {
-        $instance = WPMetaBox::instance();
+	    $instance = WPMetaBox::instance();
 
-        add_action('admin_enqueue_scripts', [$instance, 'enqueue_scripts']);
+        add_action('admin_enqueue_scripts', [$instance, 'enqueue_styling']);
+	    add_action('admin_enqueue_scripts', [$instance, 'enqueue_script']);
 
         $this->register();
     }

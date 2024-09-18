@@ -2,8 +2,9 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-use WPVNTeam\WPMetaBox\Enqueuer;
+use WPVNTeam\WPMetaBox\Options\OptionAbstract;
 
+use WPVNTeam\WPMetaBox\WPMetaBox;
 use function WPVNTeam\WPMetaBox\resource_content as resource_content;
 
 class Media extends OptionAbstract
@@ -19,13 +20,17 @@ class Media extends OptionAbstract
 
     public function enqueue()
     {
-        Enqueuer::add('wmb-media-library', function () {
-            wp_enqueue_media();
+        if (WPMetaBox::instance()->is_script_loaded('wmb-media-library')) {
+            return;
+        }
 
-            wp_register_script('wmb-media-library', false);
-            wp_enqueue_script('wmb-media-library');
-            wp_add_inline_script('wmb-media-library', resource_content('js/wmb-media-library.js'));
-        });
+        wp_enqueue_media();
+
+        wp_register_script('wmb-media-library', false);
+        wp_enqueue_script('wmb-media-library');
+        wp_add_inline_script('wmb-media-library', resource_content('js/wmb-media-library.js'));
+
+        WPMetaBox::instance()->script_is_loaded('wmb-media-library');
     }
 
     public function media_library_options()
@@ -48,7 +53,7 @@ class Media extends OptionAbstract
 
         return basename(parse_url($url, PHP_URL_PATH));
     }
-
+    
     public function get_preview_url()
     {
         $value = $this->get_value_attribute();

@@ -2,14 +2,11 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-use WPVNTeam\WPMetaBox\Enqueuer;
-
-use function WPVNTeam\WPMetaBox\resource_content;
+use WPVNTeam\WPMetaBox\Options\OptionAbstract;
 
 class CodeEditor extends OptionAbstract
 {
     public $view = 'code-editor';
-
     public $code_mirror_settings_name;
 
     public function __construct($section, $args = [])
@@ -21,19 +18,14 @@ class CodeEditor extends OptionAbstract
 
     public function enqueue()
     {
-        Enqueuer::add('wmb-code-editor', function () {
-            wp_enqueue_style('wp-codemirror');
-            wp_enqueue_script('wp-theme-plugin-editor');
+        wp_enqueue_script('wp-theme-plugin-editor');
+        wp_enqueue_style('wp-codemirror');
 
-            wp_add_inline_script('wp-theme-plugin-editor', resource_content('js/wmb-code-editor.js'));
-        });
-    }
+        $this->code_mirror_settings_name = str_replace('-', '_', $this->get_id_attribute());
 
-    public function get_editor_config()
-    {
-        return wp_enqueue_code_editor(['type' => $this->get_arg('editor_type', 'text/html'), 'codemirror' => [
-            'autoRefresh' => true,
-        ]]);
+        wp_localize_script('jquery', $this->code_mirror_settings_name, wp_enqueue_code_editor(['type' => $this->get_arg('editor_type', 'text/html'), 'codemirror' => [
+            'autoRefresh' => true
+        ]]));
     }
 
     public function sanitize($value)

@@ -2,18 +2,17 @@
 
 namespace WPVNTeam\WPMetaBox;
 
+use WPVNTeam\WPMetaBox\Option;
+use WPVNTeam\WPMetaBox\PostMetaBox;
+use WPVNTeam\WPMetaBox\TaxonomyMetaBox;
+
 class MetaBox
 {
     public $title;
-
     public $id;
-
     public $prefix = '_';
-
     public $capability = 'edit_posts';
-
     public $options = [];
-
     public $conditions = [];
 
     public function __construct($title)
@@ -74,6 +73,6 @@ class MetaBox
 
     public function get_nonce()
     {
-        return sanitize_title(str_replace('-', '_', $this->id)).'_nonce';
+        return sanitize_title(str_replace('-', '_', $this->id)) . '_nonce';
     }
 }

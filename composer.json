@@ -1,33 +1,29 @@
 {
-  "name": "wordpressvn/wp-meta-box",
-  "description": "Handy package to make creating WordPress meta boxes a breeze.",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Jeffrey van Rossum",
-      "email": "jeffrey@vanrossum.dev"
+    "name": "wordpressvn/wp-meta-box",
+    "description": "Handy package to make creating WordPress meta boxes a breeze.",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "TienCOP",
+            "email": "support@wordpressvn.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0"
     },
-    {
-        "name": "TienCOP",
-        "email": "support@wordpressvn.com"
+    "require-dev": {
+        "phpcompatibility/php-compatibility": "*",
+        "laravel/pint": "^1.17.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "WPVNTeam\\WPMetaBox\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "scripts": {
+        "format": "./vendor/bin/pint ./src/"
     }
-  ],
-  "require": {
-    "php": "^7.4|^8.0"
-  },
-  "require-dev": {
-    "phpcompatibility/php-compatibility": "*",
-    "laravel/pint": "^1.13"
-  },
-  "autoload": {
-    "psr-4": {
-      "WPVNTeam\\WPMetaBox\\": "src"
-    },
-    "files": [
-      "src/helpers.php"
-    ]
-  },
-  "scripts": {
-    "format": "./vendor/bin/pint ./src/"
-  }
 }

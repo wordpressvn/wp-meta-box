@@ -1,20 +1,19 @@
 <?php
-/** 1.1.0 **/
+/** 1.2.0 **/
 
 namespace WPVNTeam\WPMetaBox;
+
+use WPVNTeam\WPMetaBox\Option;
+use WPVNTeam\WPMetaBox\PostMetaBox;
+use WPVNTeam\WPMetaBox\TaxonomyMetaBox;
 
 class WPMetaBox
 {
     public $styling = true;
-
     public $loaded_scripts = [];
-
     private static $instance;
-
     public $styling_loaded = false;
-
     public $scripts_loaded = false;
-
     public ?Enqueuer $enqueuer = null;
 
     public static function taxonomy($title)
@@ -29,7 +28,7 @@ class WPMetaBox
 
     public static function instance()
     {
-        if (! self::$instance instanceof WPMetaBox) {
+        if (!self::$instance instanceof WPMetaBox) {
             self::$instance = new WPMetaBox();
         }
 
@@ -48,18 +47,43 @@ class WPMetaBox
         return $this;
     }
 
-    public function enqueue_scripts()
+    public function script_is_loaded($script)
     {
-        Enqueuer::add('wp-meta-box', function () {
-            wp_register_script('wp-meta-box', false);
-            wp_enqueue_script('wp-meta-box');
+        $this->loaded_scripts[] = $script;
 
-            wp_add_inline_script('wp-meta-box', resource_content('js/wp-meta-box.js'));
+        return $this;
+    }
 
-            wp_register_style('wp-meta-box', false);
-            wp_enqueue_style('wp-meta-box');
+    public function is_script_loaded($script)
+    {
+        return in_array($script, $this->loaded_scripts);
+    }
 
-            wp_add_inline_style('wp-meta-box', resource_content('css/wp-meta-box.css'));
-        });
+    public function enqueue_styling()
+    {
+        if ($this->styling_loaded) {
+            return;
+        }
+
+        wp_register_style('wp-meta-box', false);
+        wp_enqueue_style('wp-meta-box');
+
+        wp_add_inline_style('wp-meta-box', resource_content('css/wp-meta-box.css'));
+
+        $this->styling_loaded = true;
+    }
+
+    public function enqueue_script()
+    {
+        if ($this->scripts_loaded) {
+            return;
+        }
+
+        wp_register_script('wp-meta-box', false);
+        wp_enqueue_script('wp-meta-box');
+
+        wp_add_inline_script('wp-meta-box', resource_content('js/wp-meta-box.js'));
+
+        $this->scripts_loaded = true;
     }
 }

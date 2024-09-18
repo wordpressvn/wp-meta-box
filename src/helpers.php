@@ -2,12 +2,16 @@
 
 namespace WPVNTeam\WPMetaBox;
 
-if (! function_exists('view')) {
-    function view($file, $variables = [], $buffer = false)
-    {
-        extract($variables);
+use WPVNTeam\WPMetaBox\WPMetaBox;
 
-        $full_path = apply_filters('wp_meta_box_view_file_path', __DIR__."/../resources/views/{$file}.php");
+if (! function_exists('WPVNTeam\WPMetaBox\view')) {
+    function view($file, $variables = [])
+    {
+        foreach ($variables as $name => $value) {
+            ${$name} = $value;
+        }
+
+        $full_path = apply_filters('wp_meta_box_view_file_path', __DIR__ . "/../resources/views/{$file}.php");
 
         if (! file_exists($full_path)) {
             return;
@@ -17,27 +21,19 @@ if (! function_exists('view')) {
 
         include $full_path;
 
-        $output = ob_get_clean();
-
-        $result = apply_filters('wp_meta_box_render_view', $output, $file, $variables);
-
-        if ($buffer) {
-            return $result;
-        }
-
-        echo $result;
+        echo apply_filters('wp_meta_box_render_view', ob_get_clean(), $file, $variables);
     }
 }
 
-if (! function_exists('resource_content')) {
+if (! function_exists('WPVNTeam\WPMetaBox\resource_content')) {
     function resource_content($file)
     {
-        $full_path = __DIR__."/../resources/{$file}";
+        $full_path = __DIR__ . "/../resources/{$file}";
 
         if (! file_exists($full_path)) {
             return;
         }
 
-        return file_get_contents($full_path);
+        return file_get_contents( $full_path );
     }
 }

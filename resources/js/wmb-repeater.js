@@ -3,37 +3,33 @@ jQuery(function($){
         items: ".wmb-repeater-option-group",
         handle: ".wmb-drag",
       });
+      
+    $('.wmb-repeater-container  .wmb-repeater-option-group-content').addClass('hidden');
+	$('.wmb-repeater-container' ).on( 'click', '.wmb-repeater-option-group-header', function( e ) {
+		e.preventDefault();
+		$( this ).parent().toggleClass( 'hidden' );
+		$( this ).next().toggleClass( 'hidden' );
+	} );
 
     $('.wmb-repeat').on('click', function(e) {
         e.preventDefault();
 
         let container = $(this).closest('.wmb-repeater').find('.wmb-repeater-container');
 
-        wmb_dispatch_event('wmb-repeater-field-init', {container: container.get(0)});
-
         let count = container.find('.wmb-repeater-option-group').length;
 
         let clone = container.find('.wmb-repeater-option-group').first().clone();
 
         clone.find('input, textarea, select').each(function(){
-            let name = $(this).attr('name');
-
-            if(! name) {
-                console.error('wmb-repeater: input, textarea, select must have a name attribute');
-                return;
+            let nameAttr = $(this).attr('name');
+            if (nameAttr) {
+                $(this).attr('name', nameAttr.replace('[0]', '['+count+']'));
             }
-
-            // Make sure these elements are unique / incremented
-            $(this).attr('id', $(this).attr('id') + count);
-            $(this).closest('label').attr('for', $(this).attr('for') + count);
-            $(this).attr('name', name.replace('[0]', '['+count+']'));
         });
 
         container.append(wmb_clear_option_group_values(clone));
 
         wmb_delete_option_group();
-
-        wmb_dispatch_event('wmb-repeater-field-created', {target: clone.get(0), container: container.get(0)});
     });
 
     wmb_delete_option_group();
@@ -50,8 +46,6 @@ jQuery(function($){
             } else {
                 $(this).closest('.wmb-repeater-option-group').remove();
             }
-
-            wmb_dispatch_event('wmb-repeater-field-deleted', {container: container.get(0), target: $(this).closest('.wmb-repeater-option-group').get(0)});
         });
     }
 
