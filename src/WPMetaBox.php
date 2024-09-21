@@ -1,5 +1,5 @@
 <?php
-/** 1.2.0 **/
+/** 1.3.0 **/
 
 namespace WPVNTeam\WPMetaBox;
 
@@ -81,6 +81,7 @@ class WPMetaBox
 
         wp_register_script('wp-meta-box', false);
         wp_enqueue_script('wp-meta-box');
+        wp_enqueue_script('clipboard');
 
         wp_add_inline_script('wp-meta-box', resource_content('js/wp-meta-box.js'));
 

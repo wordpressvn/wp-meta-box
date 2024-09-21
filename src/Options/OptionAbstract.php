@@ -110,11 +110,11 @@ abstract class OptionAbstract
 
     public function get_label()
     {
-        // if (defined('WP_DEBUG') && WP_DEBUG) {
-            // return '<span tooltip="_'. $this->get_arg('name').'">'.\esc_attr($this->get_arg('label')).'</span>';
-        // } else {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            return '<span tooltip="_'. $this->get_arg('name').'" class="clipboard" data-clipboard-text="_'. $this->get_arg('name').'">'.\esc_attr($this->get_arg('label')).'</span>';
+        } else {
             return \esc_attr($this->get_arg('label'));
-        //}
+        }
     }
 
     public function get_id_attribute()

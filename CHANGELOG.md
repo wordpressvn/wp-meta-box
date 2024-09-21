@@ -4,6 +4,11 @@ All notable changes to `wp-meta-box` will be documented in this file
 
 ## Unreleased
 
+## 1.3.0 - 2024-09-21
+
+- [NEW] Tooltip
+- [NEW] Clipboard
+
 ## 1.2.0 - 2024-09-18
 
 - [FIX] Change core
