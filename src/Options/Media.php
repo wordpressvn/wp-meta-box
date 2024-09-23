@@ -2,14 +2,14 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-use WPVNTeam\WPMetaBox\Options\OptionAbstract;
+use WPVNTeam\WPMetaBox\Enqueuer;
 
-use WPVNTeam\WPMetaBox\WPMetaBox;
 use function WPVNTeam\WPMetaBox\resource_content as resource_content;
 
 class Media extends OptionAbstract
 {
     public $view = 'media';
+    private static $scripts_loaded = false;
 
     public function __construct($section, $args = [])
     {
@@ -20,17 +20,15 @@ class Media extends OptionAbstract
 
     public function enqueue()
     {
-        if (WPMetaBox::instance()->is_script_loaded('wmb-media-library')) {
-            return;
-        }
-
-        wp_enqueue_media();
-
-        wp_register_script('wmb-media-library', false);
-        wp_enqueue_script('wmb-media-library');
-        wp_add_inline_script('wmb-media-library', resource_content('js/wmb-media-library.js'));
-
-        WPMetaBox::instance()->script_is_loaded('wmb-media-library');
+        Enqueuer::add('wmb-media-library', function () {
+            if (!self::$scripts_loaded) {
+                self::$scripts_loaded = true;
+                wp_enqueue_media();
+                wp_register_script('wmb-media-library', false);
+                wp_enqueue_script('wmb-media-library');
+                wp_add_inline_script('wmb-media-library', resource_content('js/wmb-media-library.js'));
+            }
+        });
     }
 
     public function media_library_options()
@@ -53,7 +51,7 @@ class Media extends OptionAbstract
 
         return basename(parse_url($url, PHP_URL_PATH));
     }
-    
+
     public function get_preview_url()
     {
         $value = $this->get_value_attribute();
@@ -65,9 +63,7 @@ class Media extends OptionAbstract
         $attachment = wp_get_attachment_metadata($value);
         $fallback = '/wp-includes/images/media/document.png';
 
-        if (! $attachment && $value) {
-            return $value;
-        } elseif (! $attachment) {
+        if (! $attachment) {
             return $fallback;
         }
 

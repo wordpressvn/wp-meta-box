@@ -4,22 +4,40 @@ namespace WPVNTeam\WPMetaBox\Options;
 
 use WPVNTeam\WPMetaBox\PostMetaBox;
 use WPVNTeam\WPMetaBox\TaxonomyMetaBox;
-use WPVNTeam\WPMetaBox\TaxonomyOption;
-use WPVNTeam\WPMetaBox\WPMetaBox;
+
 use function WPVNTeam\WPMetaBox\view as view;
 
 abstract class OptionAbstract
 {
     public $meta_box;
+
     public $args = [];
+
+    public $default_args = [];
+
+    public $input_attributes = [];
+
     public $view;
+
     public $custom_name = false;
+
     public $custom_value = false;
 
     public function __construct($args, $meta_box)
     {
-        $this->args = $args;
+        $this->args = array_merge($this->default_args, $args);
+
         $this->meta_box = $meta_box;
+
+        $this->input_attributes = $this->get_arg('input_attributes', [
+            'id' => $this->get_id_attribute(),
+            'name' => $this->get_name_attribute(),
+        ]);
+    }
+
+    public function generate_hash()
+    {
+        return md5($this->get_input_attributes_string());
     }
 
     public function get_value_from_request()
@@ -77,11 +95,18 @@ abstract class OptionAbstract
 
     public function render()
     {
-        if ($this->meta_box instanceof TaxonomyMetaBox) {
-            return view('options/taxonomy/' . $this->view, ['option' => $this]);
+        global $pagenow;
+
+        $type = ($this->meta_box instanceof TaxonomyMetaBox && $this->get_arg('_parent') === null) ? 'taxonomy' : 'post';
+
+        if(!empty($pagenow) && $pagenow == 'edit-tags.php') {
+            $type = 'post';
         }
 
-        return view('options/post/' . $this->view, ['option' => $this]);
+        return view('options/'.$type.'-base', [
+            'slot' => view('options/'.$this->view, ['option' => $this], true),
+            'option' => $this,
+        ], true);
     }
 
     public function sanitize($value)
@@ -101,7 +126,7 @@ abstract class OptionAbstract
 
     public function get_description()
     {
-        if(is_callable($this->get_arg('description'))) {
+        if (is_callable($this->get_arg('description'))) {
             return $this->get_arg('description')($this);
         }
 
@@ -117,9 +142,64 @@ abstract class OptionAbstract
         }
     }
 
+    public function get_input_attributes_string($attributes = [])
+    {
+        if ($class = $this->get_css('input_class')) {
+            $attributes['class'] = $class;
+        }
+
+        if ($type = $this->get_arg('type')) {
+            $attributes['type'] = $type;
+        }
+
+        if ($this->get_arg('required')) {
+            $attributes['required'] = 'required';
+        }
+
+        $attributes = wp_parse_args($this->input_attributes, $attributes);
+
+        if(!empty($attributes['name'])) {
+            $attributes['name'] = $this->get_name_attribute();
+        }
+
+        $string = implode(' ', array_map(function ($key, $value) {
+            if(is_array($value)) {
+                $value = json_encode($value);
+            }
+
+            return $key.'="'.esc_attr($value).'"';
+        }, array_keys($attributes), $attributes));
+
+        return $string;
+    }
+
     public function get_id_attribute()
     {
         return $this->get_arg('id', sanitize_title($this->get_name_attribute()));
+    }
+
+    public function get_css($key = null)
+    {
+        if ($key) {
+            return esc_attr($this->get_arg('css', [])[$key] ?? null);
+        }
+
+        return $this->get_arg('css', []);
+    }
+
+    public function get_label_class_attribute()
+    {
+        return $this->get_css('label_class');
+    }
+
+    public function get_group_class_attribute()
+    {
+        return $this->get_css('group_class');
+    }
+
+    public function get_input_class_attribute()
+    {
+        return $this->get_css('input_class');
     }
 
     public function get_name()
@@ -148,8 +228,8 @@ abstract class OptionAbstract
         }
 
         return apply_filters(
-            'wmb_name_attribute_' . spl_object_hash($this),
-            $this->meta_box->prefix . $this->get_arg('name'),
+            'wmb_name_attribute_'.spl_object_hash($this),
+            $this->meta_box->prefix.$this->get_arg('name'),
             $this->get_object_id(),
             $this->get_arg('name')
         );
@@ -158,7 +238,7 @@ abstract class OptionAbstract
     public function get_taxonomy_value_attribute()
     {
         return apply_filters(
-            'wmb_value_attribute_' . spl_object_hash($this),
+            'wmb_value_attribute_'.spl_object_hash($this),
             get_term_meta($this->get_object_id(), $this->get_name_attribute(), true),
             $this->get_object_id(),
             $this->get_arg('name')
@@ -168,7 +248,7 @@ abstract class OptionAbstract
     public function get_post_value_attribute()
     {
         return apply_filters(
-            'wmb_value_attribute_' . spl_object_hash($this),
+            'wmb_value_attribute_'.spl_object_hash($this),
             get_post_meta($this->get_object_id(), $this->get_name_attribute(), true),
             $this->get_object_id(),
             $this->get_arg('name')

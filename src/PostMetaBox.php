@@ -2,12 +2,12 @@
 
 namespace WPVNTeam\WPMetaBox;
 
-use WPVNTeam\WPMetaBox\MetaBox;
-
 class PostMetaBox extends MetaBox
 {
     public $post_types;
+
     public $context = 'advanced';
+
     public $priority = 'default';
 
     public function set_context($context)
@@ -63,7 +63,7 @@ class PostMetaBox extends MetaBox
 
     public function register()
     {
-        if (!$this->should_register()) {
+        if (! $this->should_register()) {
             return;
         }
 
@@ -97,7 +97,6 @@ class PostMetaBox extends MetaBox
             return $post_id;
         }
 
-
         foreach ($this->options as $option) {
             $option->save();
         }
@@ -108,7 +107,7 @@ class PostMetaBox extends MetaBox
     public function render($post)
     {
         Enqueuer::enqueue();
-        
+
         foreach ($this->options as $option) {
             do_action('wmb_before_option_render', $option);
 
@@ -124,8 +123,7 @@ class PostMetaBox extends MetaBox
     {
         $instance = WPMetaBox::instance();
 
-        add_action('admin_enqueue_scripts', [$instance, 'enqueue_styling']);
-        add_action('admin_enqueue_scripts', [$instance, 'enqueue_script']);
+        add_action('admin_enqueue_scripts', [$instance, 'enqueue_scripts']);
 
         add_action('add_meta_boxes', [$this, 'register']);
         add_action('save_post', [$this, 'save']);

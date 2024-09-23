@@ -2,13 +2,13 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-class Text extends OptionAbstract
+class Date extends OptionAbstract
 {
     public $view = 'text';
 
     public function __construct($args, $meta_box)
     {
-        $this->default_args['type'] = 'text';
+        $this->default_args['type'] = 'date';
 
         parent::__construct($args, $meta_box);
     }

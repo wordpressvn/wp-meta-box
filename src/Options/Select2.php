@@ -3,163 +3,95 @@
 namespace WPVNTeam\WPMetaBox\Options;
 
 use WPVNTeam\WPMetaBox\Enqueuer;
-use WPVNTeam\WPMetaBox\Options\OptionAbstract;
 
-class Select2 extends OptionAbstract
+use function WPVNTeam\WPMetaBox\resource_content;
+
+class Select2 extends Select
 {
     public $view = 'select2';
+    private static $scripts_loaded = false;
 
     public function __construct($section, $args = [])
     {
         parent::__construct($section, $args);
 
+        $this->input_attributes['wmb-select2'] = $this->get_config();
+
+        if ($this->is_using_ajax()) {
+            $action = "wmb_select2_".$this->generate_hash();
+
+            $this->input_attributes['wmb-select2:action'] = $action;
+
+            add_action('wp_ajax_' . $action, [$this, 'handle_action']);
+        }
+
         add_action('admin_enqueue_scripts', [$this, 'enqueue']);
     }
 
-    public function get_name_attribute()
+    public function is_using_ajax()
     {
-        $name = parent::get_name_attribute();
-
-        return "{$name}[]";
+        return !empty($this->args['ajax']);
     }
 
-    public function get_value_from_request()
+    public function is_multiple()
     {
-        return $_REQUEST[parent::get_name_attribute()] ?? [];
-    }
-
-    public function get_value_attribute()
-    {
-        $value = parent::get_value_attribute();
-
-        if (empty($value)) {
-            return [];
+        if(isset($this->get_arg('config')['multiple']) && $this->get_arg('config')['multiple']) {
+            return true;
         }
 
-        return (array) $value;
+        return $this->get_arg('multiple', false);
+    }
+
+    public function get_config()
+    {
+        $default = [
+            'placeholder' => __('Select an option'),
+            'allowClear' => true,
+            'minimumInputLength' => 2,
+            'width' => '100%',
+            '_is_using_ajax' => $this->is_using_ajax()
+        ];
+
+        return array_merge($default, $this->get_arg('config', []));
+    }
+
+    public function get_value_label()
+    {
+        if (isset($this->args['ajax']['value']) && is_callable($this->args['ajax']['value'])) {
+            return call_user_func($this->args['ajax']['value'], $this->get_value_attribute(), $this);
+        }
+
+        return null;
+    }
+
+    public function handle_action()
+    {
+        if (! current_user_can($this->meta_box->capability)) {
+            return;
+        }
+
+        if (isset($this->args['ajax']['action']) && is_callable($this->args['ajax']['action'])) {
+            return call_user_func($this->args['ajax']['action'], $this);
+        }
+
+        return null;
     }
 
     public function enqueue()
     {
         Enqueuer::add('wmb-select2', function () {
-            $select2_assets = apply_filters('wmb_select2_assets', [
-                'js' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js',
-                'css' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css'
-            ]);
-            wp_enqueue_style('wmb-select2', $select2_assets['css']);
-            wp_enqueue_script('wmb-select2', $select2_assets['js'], ['jquery']);
-            wp_add_inline_script('wmb-select2', 'jQuery(function($){$(\'.select2\').select2();})'); 
-            ?>
-            <style>
-            .select2.select2-container {
-              width: 100% !important;
-            }
+            if (!self::$scripts_loaded) {
+                self::$scripts_loaded = true;
+                $select2_assets = apply_filters('wmb_select2_assets', [
+                    'js' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js',
+                    'css' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css'
+                ]);
 
-            .select2.select2-container .select2-selection {
-              border: 1px solid #ccc;
-              -webkit-border-radius: 3px;
-              -moz-border-radius: 3px;
-              border-radius: 3px;
-              height: 34px;
-              margin-bottom: 15px;
-              outline: none !important;
-              transition: all .15s ease-in-out;
-            }
+                wp_enqueue_style('wmb-select2', $select2_assets['css']);
+                wp_enqueue_script('wmb-select2', $select2_assets['js'], ['jquery']);
 
-            .select2.select2-container .select2-selection .select2-selection__rendered {
-              color: #333;
-              line-height: 32px;
-              padding-right: 33px;
+                wp_add_inline_script('wmb-select2', resource_content('js/wmb-select2.js'));
             }
-
-            .select2.select2-container .select2-selection .select2-selection__arrow {
-              background: #f8f8f8;
-              border-left: 1px solid #ccc;
-              -webkit-border-radius: 0 3px 3px 0;
-              -moz-border-radius: 0 3px 3px 0;
-              border-radius: 0 3px 3px 0;
-              height: 32px;
-              width: 33px;
-            }
-
-            .select2.select2-container.select2-container--open .select2-selection.select2-selection--single {
-              background: #f8f8f8;
-            }
-
-            .select2.select2-container.select2-container--open .select2-selection.select2-selection--single .select2-selection__arrow {
-              -webkit-border-radius: 0 3px 0 0;
-              -moz-border-radius: 0 3px 0 0;
-              border-radius: 0 3px 0 0;
-            }
-
-            .select2.select2-container.select2-container--open .select2-selection.select2-selection--multiple {
-              border: 1px solid #34495e;
-            }
-
-            .select2.select2-container .select2-selection--multiple {
-              height: auto;
-              min-height: 34px;
-            }
-
-            .select2.select2-container .select2-selection--multiple .select2-search--inline .select2-search__field {
-              margin-top: 0;
-              height: 32px;
-            }
-
-            .select2.select2-container .select2-selection--multiple .select2-selection__rendered {
-              padding: 0 4px;
-              line-height: 29px;
-            }
-
-            .select2.select2-container .select2-selection--multiple .select2-selection__choice {
-              background-color: #f8f8f8;
-              border: 1px solid #ccc;
-              -webkit-border-radius: 3px;
-              -moz-border-radius: 3px;
-              border-radius: 3px;
-              margin: 4px 4px 0 0;
-              padding: 0 6px 0 22px;
-              height: 24px;
-              line-height: 24px;
-              font-size: 12px;
-              position: relative;
-            }
-
-            .select2.select2-container .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
-              color: #e74c3c;
-              font-size: 18px;
-            }
-
-            .select2-container .select2-dropdown {
-              background: transparent;
-              border: none;
-              margin-top: -5px;
-            }
-
-            .select2-container .select2-dropdown .select2-search {
-              padding: 0;
-            }
-
-            .select2-container .select2-dropdown .select2-search input {
-              outline: none !important;
-              border: 1px solid #34495e !important;
-              border-bottom: none !important;
-              padding: 4px 6px !important;
-            }
-
-            .select2-container .select2-dropdown .select2-results {
-              padding: 0;
-            }
-
-            .select2-container .select2-dropdown .select2-results ul {
-              background: #fff;
-              border: 1px solid #34495e;
-            }
-
-            .select2-container .select2-dropdown .select2-results ul .select2-results__option--highlighted[aria-selected] {
-              background-color: #3498db;
-            }
-            </style><?php 
         });
     }
 }

@@ -53,72 +53,7 @@
     font-size: 14px;
     line-height: 1.4;
 }
-.wmb-input {
-    width: 100%;
-    margin-bottom: 1em;
-}
-.wmb-input > div {
-    width: 100%;
-}
-.metabox-location-advanced .wmb-input {
-    display: flex;
-    width: 100%;
-    max-width: 760px;
-}
-.metabox-location-side  .wmb-input {
-    display: block;
-}
-.metabox-location-advanced .wmb-input label {
-    min-width: 200px;
-}
-.wmb-input-description {
-    font-style: italic;
-    margin: 0 0 0.5em 0;
-}
-.wmb-code-editor {
-    border: 1px solid #ddd;
-}
-.wmb-repeater-container {
-    position: relative;
-    overflow: auto;
-}
-.wmb-repeater-option-group-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding: 5px 3px;
-}
-.wmb-repeater-option-group-header label {
-    display: none;
-}
-.wmb-repeater-option-group-header input {
-    border: none;
-    cursor: pointer;
-}
-.wmb-repeater-option-group-header .wmb-input {
-    margin-bottom: 0;
-}
-.wmb-delete, .wmb-drag {
-    border: none;
-    background: none;
-    -webkit-appearance: none;
-}
-.wmb-delete {
-    cursor: pointer;
-}
-.wmb-drag {
-    cursor: grab;
-}
-.wmb-repeater-option-group {
-    border: 1px solid #eee;
-    display: block;
-    background-color: #fff;
-    margin-bottom: 10px;
-}
-.wmb-repeater-option-group-content {
-    padding: 10px;
-}
+
 .wmb-input {
     display: flex;
     border-top-width: 1px;
@@ -166,4 +101,65 @@
 }
 .postbox-container .wmb-input:first-child {
     margin-top: -18px;
+}
+
+.metabox-location-advanced .wmb-input {
+    display: flex;
+    width: 100%;
+    max-width: 960px;
+}
+
+.metabox-location-side  .wmb-input {
+    display: block;
+}
+
+.metabox-location-advanced .wmb-input label {
+    min-width: 200px;
+}
+
+.wmb-input-description {
+    font-style: italic;
+    margin: 0 0 0.5em 0;
+}
+
+.wmb-code-editor {
+    border: 1px solid #ddd;
+}
+
+.wmb-repeater-container {
+    position: relative;
+    overflow: auto;
+}
+
+.wmb-repeater-option-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 4px 8px;
+}
+
+.wmb-delete, .wmb-drag {
+    border: none;
+    background: none;
+    -webkit-appearance: none;
+}
+
+.wmb-delete {
+    cursor: pointer;
+}
+
+.wmb-drag {
+    cursor: grab;
+}
+
+.wmb-repeater-option-group {
+    border: 1px solid #ddd;
+    display: block;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.wmb-repeater-option-group-content {
+    padding: 10px;
 }

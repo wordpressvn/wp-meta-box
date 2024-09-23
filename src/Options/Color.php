@@ -2,34 +2,36 @@
 
 namespace WPVNTeam\WPMetaBox\Options;
 
-use WPVNTeam\WPMetaBox\WPMetaBox;
-use WPVNTeam\WPMetaBox\Options\OptionAbstract;
+use WPVNTeam\WPMetaBox\Enqueuer;
+
 use function WPVNTeam\WPMetaBox\resource_content as resource_content;
 
 class Color extends OptionAbstract
 {
-	public $view = 'color';
+    public $view = 'text';
+    private static $scripts_loaded = false;
 
-	public function __construct($section, $args = [])
-	{
-		add_action('admin_enqueue_scripts', [$this, 'enqueue']);
+    public function __construct($section, $args = [])
+    {
+        add_action('admin_enqueue_scripts', [$this, 'enqueue']);
 
-		parent::__construct($section, $args);
-	}
+        $this->default_args = array_merge($this->default_args, [
+            'css' => ['input_class' => 'wmb-color-picker'],
+            'type' => 'text',
+        ]);
 
-	public function enqueue()
-	{
-		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'wp-color-picker');
+        parent::__construct($section, $args);
+    }
 
-		if (WPMetaBox::instance()->is_script_loaded('wmb-color-picker')) {
-            return;
-        }
-
-        wp_register_script('wmb-color-picker', false);
-        wp_enqueue_script('wmb-color-picker');
-        wp_add_inline_script('wmb-color-picker', resource_content('js/wmb-color-picker.js'));
-
-	    WPMetaBox::instance()->script_is_loaded('wmb-color-picker');
-	}
+    public function enqueue()
+    {
+        Enqueuer::add('wp-color-picker', function () {
+            if (!self::$scripts_loaded) {
+                self::$scripts_loaded = true;
+                wp_enqueue_script('wp-color-picker');
+                wp_enqueue_style('wp-color-picker');
+                wp_add_inline_script('wp-color-picker', 'jQuery(function($){$(".wmb-color-picker").wpColorPicker();})');
+            }
+        });
+    }
 }
