@@ -45,7 +45,7 @@
 .wmb-input label code {
     margin-left: auto;
 }
-.wmb-input input[type="text"], .wmb-input input[type="number"], .wmb-input select, .wmb-input textarea {
+.wmb-input input[type="text"], .wmb-input select, .wmb-input textarea {
     width: 100%;
     padding: 4px 8px;
     margin: 0;
