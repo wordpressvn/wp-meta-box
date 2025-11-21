@@ -7,7 +7,6 @@ jQuery(function($) {
         var $trigger = $(event.trigger),
             originalTooltip = $trigger.attr('tooltip'),
             copiedText = event.text;
-            
         $trigger.attr('tooltip', wp.i18n.__('Copied: ') + copiedText);
         setTimeout(function() {
             $trigger.attr('tooltip', originalTooltip);

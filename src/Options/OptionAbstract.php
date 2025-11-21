@@ -4,6 +4,7 @@ namespace WPVNTeam\WPMetaBox\Options;
 
 use WPVNTeam\WPMetaBox\PostMetaBox;
 use WPVNTeam\WPMetaBox\TaxonomyMetaBox;
+use WPVNTeam\WPMetaBox\UserMetaBox;
 
 use function WPVNTeam\WPMetaBox\view as view;
 
@@ -49,6 +50,8 @@ abstract class OptionAbstract
     {
         if ($this->meta_box instanceof TaxonomyMetaBox) {
             return $this->get_term_id();
+        } elseif ($this->meta_box instanceof UserMetaBox) {
+            return $this->meta_box->current_user_id ?? 0;
         }
 
         return $this->get_post_id();
@@ -72,6 +75,8 @@ abstract class OptionAbstract
             $this->savePost();
         } elseif ($this->meta_box instanceof TaxonomyMetaBox) {
             $this->saveTaxonomy($object_id);
+        } elseif ($this->meta_box instanceof UserMetaBox) {
+            $this->saveUser($object_id);
         }
     }
 
@@ -93,11 +98,26 @@ abstract class OptionAbstract
         }
     }
 
+    public function saveUser($user_id)
+    {
+        if ($value = $this->get_value_from_request()) {
+            update_user_meta($user_id, $this->get_name_attribute(), $value);
+        } else {
+            delete_user_meta($user_id, $this->get_name_attribute());
+        }
+    }
+
     public function render()
     {
         global $pagenow;
-
-        $type = ($this->meta_box instanceof TaxonomyMetaBox && $this->get_arg('_parent') === null) ? 'taxonomy' : 'post';
+        
+        if ($this->meta_box instanceof UserMetaBox) {
+            $type = 'user';
+        } elseif ($this->meta_box instanceof TaxonomyMetaBox && $this->get_arg('_parent') === null) {
+            $type = 'taxonomy';
+        } else {
+            $type = 'post';
+        }
 
         if(!empty($pagenow) && $pagenow == 'edit-tags.php') {
             $type = 'post';
@@ -135,8 +155,10 @@ abstract class OptionAbstract
 
     public function get_label()
     {
+        $prefix = $this->meta_box->prefix ?? '';
+
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            return '<span tooltip="_'. $this->get_arg('name').'" class="clipboard" data-clipboard-text="_'. $this->get_arg('name').'">'.\esc_attr($this->get_arg('label')).'</span>';
+            return '<span tooltip="' . $prefix . $this->get_arg('name') . '" class="clipboard" data-clipboard-text="' . $prefix . $this->get_arg('name') . '">' . \esc_attr($this->get_arg('label')) . '</span>';
         } else {
             return \esc_attr($this->get_arg('label'));
         }
@@ -158,9 +180,15 @@ abstract class OptionAbstract
 
         $attributes = wp_parse_args($this->input_attributes, $attributes);
 
-        if(!empty($attributes['name'])) {
-            $attributes['name'] = $this->get_name_attribute();
+        
+        if (isset($attributes['name'])) {
+            $name = $this->get_name_attribute();
+            if (isset($attributes['multiple'])) {
+                $name .= '[]';
+            }
+            $attributes['name'] = $name;
         }
+        
 
         $string = implode(' ', array_map(function ($key, $value) {
             if(is_array($value)) {
@@ -255,6 +283,16 @@ abstract class OptionAbstract
         );
     }
 
+    public function get_user_value_attribute()
+    {
+        return apply_filters(
+            'wmb_value_attribute_'.spl_object_hash($this),
+            get_user_meta($this->get_object_id(), $this->get_name_attribute(), true),
+            $this->get_object_id(),
+            $this->get_arg('name')
+        );
+    }
+
     public function get_value_attribute()
     {
         if (is_callable($this->custom_value)) {
@@ -263,8 +301,11 @@ abstract class OptionAbstract
 
         if ($this->meta_box instanceof TaxonomyMetaBox) {
             return $this->get_taxonomy_value_attribute();
+        } elseif ($this->meta_box instanceof UserMetaBox) {
+            return $this->get_user_value_attribute();
         }
 
         return $this->get_post_value_attribute();
     }
+
 }

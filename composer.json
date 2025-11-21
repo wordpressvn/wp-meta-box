@@ -1,7 +1,7 @@
 {
     "name": "wordpressvn/wp-meta-box",
     "description": "Handy package to make creating WordPress meta boxes a breeze.",
-    "license": "GPL-2.0",
+    "license": "GPL-3.0",
     "authors": [
         {
             "name": "TienCOP",
@@ -9,11 +9,7 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0"
-    },
-    "require-dev": {
-        "phpcompatibility/php-compatibility": "*",
-        "laravel/pint": "^1.17.3"
+        "php": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -22,8 +18,5 @@
         "files": [
             "src/helpers.php"
         ]
-    },
-    "scripts": {
-        "format": "./vendor/bin/pint ./src/"
     }
 }

@@ -4,6 +4,14 @@ All notable changes to `wp-meta-box` will be documented in this file
 
 ## Unreleased
 
+## 1.7.0 - 2025-11-21
+
+- [FIX] Change core
+
+## 1.6.0 - 2024-11-24
+
+- [FIX] EnqueueManager
+
 ## 1.5.0 - 2024-09-24
 
 - [FIX] Change core

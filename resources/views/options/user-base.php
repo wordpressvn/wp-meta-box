@@ -1,4 +1,4 @@
-<tr class="form-field term-<?php echo esc_attr($option->get_name_attribute()); ?>-wrap <?php echo $option->get_group_class_attribute(); ?>">
+<tr class="form-field user-<?php echo esc_attr($option->get_name_attribute()); ?>-wrap <?php echo $option->get_group_class_attribute(); ?>">
     <th scope="row">
         <label for="<?php echo $option->get_id_attribute(); ?>"><?php echo $option->get_label(); ?></label>
     </th>

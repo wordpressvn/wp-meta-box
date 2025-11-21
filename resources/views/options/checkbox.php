@@ -1,8 +1,9 @@
 <?php if($option->is_multiple()) : ?>
+    <input type="hidden" name="<?php echo esc_attr($option->get_name_attribute()); ?>">
     <ul>
         <?php foreach ($option->get_options() as $key => $label) { ?>
             <li>
-            <input name="<?php echo esc_attr($option->get_name_attribute()); ?>" id="<?php echo $option->get_id_attribute(); ?>_<?php echo $key; ?>" type="checkbox" value="<?php echo $key; ?>" <?php echo in_array($key, $option->get_value_attribute()) ? 'checked' : null; ?>><label for="<?php echo $option->get_id_attribute(); ?>_<?php echo $key; ?>"><?php echo $label; ?></label>
+            <label for="<?php echo $option->get_id_attribute(); ?>_<?php echo $key; ?>"><input name="<?php echo esc_attr($option->get_name_attribute()); ?>[]" id="<?php echo $option->get_id_attribute(); ?>_<?php echo $key; ?>" type="checkbox" value="<?php echo $key; ?>" <?php echo in_array($key, $option->get_value_attribute()) ? 'checked' : null; ?>> <?php echo $label; ?></label>
             </li>
         <?php } ?>
     </ul>
@@ -13,7 +14,3 @@
     <input type="checkbox" <?php echo $option->get_input_attributes_string(['value' => $option->get_value_attribute()]); ?>
     <?php echo $option->is_checked() ? 'checked' : null; ?>>
 <?php endif; ?>
-
-
-
-        

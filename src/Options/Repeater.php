@@ -51,8 +51,8 @@ class Repeater extends OptionAbstract
 
     public function save($object_id = null)
     {
-        $value = array_filter($this->get_value_from_request(), function ($group) {
-            return array_filter($group);
+        $value = array_filter((array) $this->get_value_from_request(), function ($group) {
+            return array_filter((array) $group);
         });
 
         if ($this->meta_box instanceof TaxonomyMetaBox) {

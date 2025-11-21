@@ -8,7 +8,7 @@ class MetaBox
 
     public $id;
 
-    public $prefix = '_';
+    public $prefix = ''; // Use $meta_box->prefix = '_' when you want to make the meta key private
 
     public $capability = 'edit_posts';
 

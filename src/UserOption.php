@@ -2,4 +2,4 @@
 
 namespace WPVNTeam\WPMetaBox;
 
-class PostOption extends Option{}
+class UserOption extends Option {}

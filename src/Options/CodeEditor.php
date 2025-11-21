@@ -36,9 +36,15 @@ class CodeEditor extends OptionAbstract
 
     public function get_editor_config()
     {
-        return wp_enqueue_code_editor(['type' => $this->get_arg('editor_type', 'text/html'), 'codemirror' => [
-            'autoRefresh' => true,
-        ]]);
+        return wp_enqueue_code_editor([
+            'type' => $this->get_arg('editor_type', 'text/html'),
+            'codemirror' => [
+                'autoRefresh'   => true,
+                'mode'          => 'htmlmixed',
+                'indentWithTabs'=> false,
+                'tabSize'       => 2,
+            ]
+        ]);
     }
 
     public function sanitize($value)

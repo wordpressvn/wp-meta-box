@@ -66,7 +66,7 @@ class Option
 
     public function render()
     {
-        echo $this->implementation->render();
+        return $this->implementation->render();
     }
 
     public function add_repeater_option($name, $args)

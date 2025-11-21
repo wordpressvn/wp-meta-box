@@ -1,5 +1,5 @@
 <?php
-/** 1.5.0 **/
+/** 1.7.0 **/
 
 namespace WPVNTeam\WPMetaBox;
 
@@ -25,6 +25,11 @@ class WPMetaBox
     public static function post($title)
     {
         return new PostMetaBox($title);
+    }
+
+    public static function user($title)
+    {
+        return new UserMetaBox($title);
     }
 
     public static function instance()

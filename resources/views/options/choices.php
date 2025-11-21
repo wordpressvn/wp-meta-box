@@ -1,4 +1,3 @@
-
 <div>
     <?php foreach ($option->get_arg('options', []) as $key => $label) { ?>
         <div>

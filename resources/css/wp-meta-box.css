@@ -53,7 +53,6 @@
     font-size: 14px;
     line-height: 1.4;
 }
-
 .wmb-input {
     display: flex;
     border-top-width: 1px;
@@ -102,35 +101,28 @@
 .postbox-container .wmb-input:first-child {
     margin-top: -18px;
 }
-
 .metabox-location-advanced .wmb-input {
     display: flex;
     width: 100%;
     max-width: 960px;
 }
-
 .metabox-location-side  .wmb-input {
     display: block;
 }
-
 .metabox-location-advanced .wmb-input label {
     min-width: 200px;
 }
-
 .wmb-input-description {
     font-style: italic;
     margin: 0 0 0.5em 0;
 }
-
 .wmb-code-editor {
     border: 1px solid #ddd;
 }
-
 .wmb-repeater-container {
     position: relative;
-    overflow: auto;
+    overflow: hidden;
 }
-
 .wmb-repeater-option-group-header {
     display: flex;
     justify-content: space-between;
@@ -138,28 +130,23 @@
     border-bottom: 1px solid #eee;
     padding: 4px 8px;
 }
-
 .wmb-delete, .wmb-drag {
     border: none;
     background: none;
     -webkit-appearance: none;
 }
-
 .wmb-delete {
     cursor: pointer;
 }
-
 .wmb-drag {
     cursor: grab;
 }
-
 .wmb-repeater-option-group {
     border: 1px solid #ddd;
     display: block;
     background-color: #fff;
     margin-bottom: 10px;
 }
-
 .wmb-repeater-option-group-content {
     padding: 10px;
 }

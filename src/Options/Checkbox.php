@@ -60,13 +60,7 @@ class Checkbox extends OptionAbstract
 
     public function get_name_attribute()
     {
-        $name = parent::get_name_attribute();
-
-        if ($this->is_multiple()) {
-            return "{$name}[]";
-        }
-
-        return $name;
+        return parent::get_name_attribute();
     }
 
     public function get_value_from_request()

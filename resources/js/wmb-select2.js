@@ -1,34 +1,24 @@
 jQuery(function ($) {
-
     document.addEventListener('wmb-repeater-field-init', function () {
         wmb_select2_destroy_all();
     })
-
     document.addEventListener('wmb-repeater-field-created', function (e) {
         let selects = document.querySelectorAll('[wmb-select2]');
-
         wmb_select2_init(selects);
     })
-
     function wmb_select2_destroy_all() {
         let selects = document.querySelectorAll('[wmb-select2]');
-
         for (let select of selects) {
             $(select).select2('destroy');
         }
     }
-
     function wmb_select2_init(selects) {
         for (let select of selects) {
             let config = {};
-
             if (select.getAttribute('wmb-select2')) {
                 let customConfig = JSON.parse(select.getAttribute('wmb-select2'));
-
                 config = Object.assign(config, customConfig);
             }
-
-            // Convert every string inside config.language to a function that returns that string
             if (config.language) {
                 for (let key in config.language) {
                     if (typeof config.language[key] === 'string') {
@@ -39,7 +29,6 @@ jQuery(function ($) {
                     }
                 }
             }
-
             if (config._is_using_ajax) {
                 config.ajax = {
                     url: ajaxurl,
@@ -65,12 +54,9 @@ jQuery(function ($) {
                     cache: true
                 };
             }
-
             $(select).select2(config);
         }
     }
-
     let selects = document.querySelectorAll('[wmb-select2]');
-
     wmb_select2_init(selects);
 })
